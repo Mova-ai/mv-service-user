@@ -1,26 +1,29 @@
-// config/FirebaseConfig.java
 package com.mova.users.config;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.auth.oauth2.GoogleCredentials;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import javax.annotation.PostConstruct;
+import java.io.FileInputStream;
 
 @Configuration
 public class FirebaseConfig {
 
+    @Value("${firebase.credentials.path}")
+    private String firebaseCredentialsPath;
 
-    public FirebaseConfig() throws Exception {
+    @PostConstruct
+    public void init() throws Exception {
         if (FirebaseApp.getApps().isEmpty()) {
-            String json = System.getenv("MV-FIREBASE-APPLICATION_CREDENTIALS");
+            FileInputStream serviceAccount = new FileInputStream(firebaseCredentialsPath);
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(
-                            new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))))
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
             FirebaseApp.initializeApp(options);
+            System.out.println("Firebase inicializado correctamente!");
         }
     }
 }
