@@ -19,12 +19,16 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
+
+        System.out.println("Entrando en FirebaseAuthFilter");
         String header = req.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String idToken = header.substring(7);
+            System.out.println("Este es el IDTOKEN " + idToken);
             try {
                 FirebaseToken decoded = FirebaseAuth.getInstance().verifyIdToken(idToken);
-
+                System.out.println("Firebase UID: " + decoded.getUid());
+                System.out.println("Firebase EMAIL: " + decoded.getEmail());
                 // Authorities básicas: desde custom claims ("roles") si las usas
                 var roles = decoded.getClaims().containsKey("roles")
                         ? ((java.util.List<String>) decoded.getClaims().get("roles"))
@@ -42,5 +46,6 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(req, res);
+        System.out.println("Saliendo en FirebaseAuthFilter");
     }
 }
