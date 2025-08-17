@@ -15,6 +15,8 @@ public class UserController {
     // GET /me  → devuelve perfil (y crea si no existe)
     @GetMapping
     public User me(Authentication auth) throws Exception {
+        System.out.println("Entro al controller");
+        System.out.println("Auth del controller: " + auth);
         String uid = (String) auth.getPrincipal();
         return users.getOrProvision(uid);
     }
