@@ -49,3 +49,6 @@ Thumbs.db
 # Archivos temporales
 *.swp
 *.swo
+
+#Firebase Credential
+mova-bd94e-firebase-adminsdk-fbsvc-08b7fa43bf.json
