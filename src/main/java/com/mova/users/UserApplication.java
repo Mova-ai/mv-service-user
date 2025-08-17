@@ -1,4 +1,4 @@
-package com.mova.user;
+package com.mova.users;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
