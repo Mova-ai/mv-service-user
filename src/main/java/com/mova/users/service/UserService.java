@@ -39,4 +39,7 @@ public class UserService {
         r.setName("USER");
         return r;
     }
+
+    public User save(User u) { return repo.save(u); }
+
 }
