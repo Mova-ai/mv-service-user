@@ -20,7 +20,7 @@ public class UserController {
         String uid = (String) auth.getPrincipal();
         return users.getOrProvision(uid);
     }
-
+/*
     // PUT /me  → actualizar displayName, photo, prefs...
     @PutMapping
     public User updateMe(Authentication auth, @RequestBody UpdateMeDto dto) throws Exception {
@@ -36,6 +36,9 @@ public class UserController {
         }
         return users.save(u);
     }
+
+
+ */
 }
 
 // DTOs

@@ -35,61 +35,23 @@ Dejo un vistazo de lo que debería tener un usuario en versión 1.
 - `GET /usuarios/{id}/amigos` → Lista de amigos, si tu app tiene social features.
 - `POST /usuarios/{id}/amigos` → Solicitud de amistad.
 - `PUT /usuarios/{id}/amigos/{idAmigo}` → Aceptar/rechazar solicitud.
-- `DELETE /usuarios/{id}/amigos/{idAmigo}` → Eliminar amigo.
+  - `DELETE /usuarios/{id}/amigos/{idAmigo}` → Eliminar amigo.
 
-  ```json
-  {
-  "uid": "2JlUhiFTg0YcrKLPqqxGgiib3fU2",
-  "email": "test@back.com",
-  "displayName": "Test User",
-  "photo": "https://example.com/photo.jpg",
-  "preferences": {
-    "language": "es",
-    "darkMode": true,
-    "currency": "EUR"
-  },
-  "roles": [
-    { "name": "USER" }
-  ],
-  "amigos": [
-    { "uid": "A1B2C3D4", "displayName": "Amigo 1", "email": "amigo1@example.com" },
-    { "uid": "E5F6G7H8", "displayName": "Amigo 2", "email": "amigo2@example.com" }
-  ],
-  "favoritos": [
-    { "id": "plan123", "tipo": "plan", "nombre": "Tour Roma" },
-    { "id": "local456", "tipo": "local", "nombre": "Restaurante Italiano" }
-  ],
-  "planes": [
-    {
-      "id": "plan123",
-      "nombre": "Tour Roma",
-      "fecha": "2025-08-20T10:00:00Z",
-      "ubicacion": "Roma, Italia",
-      "participantes": ["2JlUhiFTg0YcrKLPqqxGgiib3fU2", "A1B2C3D4"]
-    }
-  ],
-  "locales": [
-    {
-      "id": "local456",
-      "nombre": "Restaurante Italiano",
-      "direccion": "Via Roma 10, Roma",
-      "categoria": "Comida",
-      "rating": 4.5
-    }
-  ],
-  "resenas": [
-    {
-      "id": "resena789",
-      "localId": "local456",
-      "autorUid": "2JlUhiFTg0YcrKLPqqxGgiib3fU2",
-      "comentario": "Excelente comida y ambiente",
-      "rating": 5,
-      "fecha": "2025-08-17T15:00:00Z"
-    }
-  ],
-  "createdAt": "2025-08-17T16:00:00Z",
-  "updatedAt": "2025-08-17T16:10:00Z"
-}
+    ```json
+      {
+      "uid": "firebase-uid-123",
+      "displayName": "Carlos Pérez",
+      "email": "carlos@example.com",
+      "photoUrl": "https://example.com/foto.jpg",
+      "preferences": {
+      "interests": ["cultura", "gastronomía"],
+      "budget": "medio"
+      },
+      "friends": ["firebase-uid-456", "firebase-uid-789"],
+      "favorites": ["local-123", "local-987"],  // solo ids
+      "points": 120
+      }
+      ```
 
 ## Tecnologías
 
