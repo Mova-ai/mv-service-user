@@ -2,8 +2,8 @@ package com.mova.users.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.time.Instant;
+
 
 @Entity
 @Table(name="users")
@@ -32,6 +32,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JsonManagedReference
     private UserPreferences preferences;
+
 
     public User() {
     }
@@ -110,5 +111,6 @@ public class User {
 
     public void setPreferences(UserPreferences preferences) {
         this.preferences = preferences;
+
     }
 }

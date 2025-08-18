@@ -10,6 +10,7 @@ import com.mova.users.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 public class UserService {
     private final UserRepository repo;
@@ -22,6 +23,7 @@ public class UserService {
             try {
                 UserRecord fr = FirebaseAuth.getInstance().getUser(uid);
 
+
                 User u = new User();
                 u.setUid(fr.getUid());
                 u.setEmail(fr.getEmail());
@@ -33,13 +35,14 @@ public class UserService {
                 UserPreferences prefs = new UserPreferences();
                 prefs.setUser(u);
                 u.setPreferences(prefs);
-
+              
                 return repo.save(u);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
     }
+
 
     public User save(User u) { return repo.save(u); }
 
