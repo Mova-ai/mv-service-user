@@ -1,17 +1,49 @@
 package com.mova.users.model;
 
-public class Preferences {
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
+@Entity
+public class UserPreferences {
+
+    @Id
+    private String id;
+
     private String language = "es";
     private Boolean darkMode = false;
     private String currency = "EUR";
 
-    public Preferences() {
+    // referencia al User
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    @JsonBackReference
+    private User user;
+
+    public UserPreferences() {
     }
 
-    public Preferences(String language, Boolean darkMode, String currency) {
+    public UserPreferences(String id, String language, Boolean darkMode, String currency) {
+        this.id = id;
         this.language = language;
         this.darkMode = darkMode;
         this.currency = currency;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLanguage() {
@@ -38,3 +70,4 @@ public class Preferences {
         this.currency = currency;
     }
 }
+
