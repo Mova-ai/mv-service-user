@@ -1,9 +1,10 @@
 package com.mova.users.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.time.Instant;
+
 
 @Entity
 @Table(name="users")
@@ -25,13 +26,17 @@ public class User {
     @Column(nullable = false)
     private Boolean isActive;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "name", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", referencedColumnName ="id")
     private Role role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     @JsonManagedReference
     private UserPreferences preferences;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
+    private UserProfile profile;
 
     public User() {
     }
@@ -41,7 +46,8 @@ public class User {
                 Instant createdAt,
                 Instant updatedAt,
                 Role role,
-                UserPreferences preferences
+                UserPreferences preferences,
+                UserProfile profile
     ) {
         this.uid = uid;
         this.email = email;
@@ -53,6 +59,11 @@ public class User {
         if (preferences != null) {
             preferences.setUser(this);
         };
+
+        if (profile != null) {
+            profile.setUser(this);
+        }
+
     }
 
 
@@ -110,5 +121,27 @@ public class User {
 
     public void setPreferences(UserPreferences preferences) {
         this.preferences = preferences;
+    }
+
+    public UserProfile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(UserProfile profile) {
+        this.profile = profile;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", isActive=" + isActive +
+                ", role=" + role +
+                ", preferences=" + preferences +
+                ", profile=" + profile +
+                '}';
     }
 }
