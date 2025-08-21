@@ -1,9 +1,11 @@
 // controller/UserController.java
 package com.mova.users.controller;
 
+import com.mova.users.dto.UserDto;
 import com.mova.users.model.User;
 import com.mova.users.service.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +21,12 @@ public class UserController {
         System.out.println("Auth del controller: " + auth);
         String uid = (String) auth.getPrincipal();
         return users.getOrProvision(uid);
+    }
+
+    @PostMapping("login")
+    public User loginUser(Authentication  user) throws Exception {
+        String uid = (String) user.getPrincipal();
+        return users.getUserOrCreate(uid);
     }
 
 /*
