@@ -15,13 +15,13 @@ public class UserController {
     public UserController(UserService users) { this.users = users; }
 
     // GET /me  → devuelve perfil (y crea si no existe)
-    @GetMapping
-    public User me(Authentication auth) throws Exception {
-        System.out.println("Entro al controller");
-        System.out.println("Auth del controller: " + auth);
-        String uid = (String) auth.getPrincipal();
-        return users.getOrProvision(uid);
-    }
+//    @GetMapping
+//    public User me(Authentication auth) throws Exception {
+//        System.out.println("Entro al controller");
+//        System.out.println("Auth del controller: " + auth);
+//        String uid = (String) auth.getPrincipal();
+//        return users.getOrProvision(uid);
+//    }
 
     @PostMapping("login")
     public User loginUser(Authentication  user) throws Exception {
