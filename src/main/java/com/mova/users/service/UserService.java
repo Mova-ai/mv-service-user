@@ -8,14 +8,18 @@ import com.mova.users.dto.UserDto;
 import com.mova.users.model.Role;
 import com.mova.users.model.User;
 import com.mova.users.model.UserPreferences;
+
 import com.mova.users.model.UserProfile;
+
 import com.mova.users.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.Optional;
+
 
 @Service
 public class UserService {
@@ -97,6 +101,7 @@ public class UserService {
             log.info("Usuario {} no encontrado, procedemos a crearlo", uid);
 
             try {
+
                 UserRecord userFr = FirebaseAuth.getInstance().getUser(uid);
 
                 User user = new User();
@@ -124,16 +129,19 @@ public class UserService {
                 log.info("Usuario {} creado correctamente ", uid);
                 return saved;
 
+
             } catch (Exception e) {
                 log.error("Error creando usuario {} ", uid, e);
                 throw e;
             }
+
 
         } else {
             log.debug("Usuario {} encontrado en la base de datos", uid);
             return userOpt.get();
         }
     }
+
 
 
     public User save(User u) { return repo.save(u); }

@@ -1,5 +1,6 @@
 package com.mova.users.model;
 
+
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -149,4 +150,5 @@ public class UserProfile {
                 ", bio='" + bio + '\'' +
                 '}';
     }
+
 }

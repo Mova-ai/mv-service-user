@@ -1,6 +1,7 @@
 package com.mova.users.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.Instant;
@@ -26,6 +27,7 @@ public class User {
     @Column(nullable = false)
     private Boolean isActive;
 
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName ="id")
     private Role role;
@@ -38,6 +40,7 @@ public class User {
     @JsonIgnore
     private UserProfile profile;
 
+
     public User() {
     }
 
@@ -46,8 +49,10 @@ public class User {
                 Instant createdAt,
                 Instant updatedAt,
                 Role role,
+
                 UserPreferences preferences,
                 UserProfile profile
+
     ) {
         this.uid = uid;
         this.email = email;
@@ -60,11 +65,13 @@ public class User {
             preferences.setUser(this);
         };
 
+
         if (profile != null) {
             profile.setUser(this);
         }
 
     }
+
 
 
     public String getUid() {
@@ -121,6 +128,7 @@ public class User {
 
     public void setPreferences(UserPreferences preferences) {
         this.preferences = preferences;
+
     }
 
     public UserProfile getProfile() {
@@ -143,5 +151,6 @@ public class User {
                 ", preferences=" + preferences +
                 ", profile=" + profile +
                 '}';
+
     }
 }

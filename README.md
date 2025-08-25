@@ -35,6 +35,7 @@ Dejo un vistazo de lo que debería tener un usuario en versión 1.
 - `GET /usuarios/{id}/amigos` → Lista de amigos, si tu app tiene social features.
 - `POST /usuarios/{id}/amigos` → Solicitud de amistad.
 - `PUT /usuarios/{id}/amigos/{idAmigo}` → Aceptar/rechazar solicitud.
+
   - `DELETE /usuarios/{id}/amigos/{idAmigo}` → Eliminar amigo.
 
     ```json
@@ -52,6 +53,7 @@ Dejo un vistazo de lo que debería tener un usuario en versión 1.
       "points": 120
       }
       ```
+
 
 ## Tecnologías
 

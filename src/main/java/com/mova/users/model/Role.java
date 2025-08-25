@@ -11,7 +11,9 @@ public class Role {
     private Long id;
 
     @Column(nullable = false)
+
     private String rol = "USER";
+
 
     @OneToOne
     @JoinColumn(name = "name_id", nullable = false, unique = true)
@@ -29,14 +31,17 @@ public class Role {
     }
     public void setId(Long name) {
         this.id = name;
+
     }
 
     public String getRol() {
         return rol;
     }
 
+
     public void setRol(String rol) {
         this.rol = rol;
+
     }
 
     @Override
