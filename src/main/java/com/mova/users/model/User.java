@@ -1,54 +1,61 @@
 package com.mova.users.model;
-import com.mova.users.model.Role;
-import com.mova.users.model.Preferences;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
 import java.time.Instant;
-import java.util.Set;
+
 
 @Entity
 @Table(name="users")
 public class User {
 
     @Id
+    @Column(nullable = false, unique = true)
     private String uid;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    private String displayName;
-    private String photo;
-
-    @Embedded
-    private Preferences preferences = new Preferences();
-
+    @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
+
+    @Column()
     private Instant updatedAt = Instant.now();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "uid"),
-            inverseJoinColumns = @JoinColumn(name = "role_name"))
-    private Set<Role> roles;
+    @Column(nullable = false)
+    private Boolean isActive;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "name", referencedColumnName = "id")
+    private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JsonManagedReference
+    private UserPreferences preferences;
+
 
     public User() {
     }
 
-    public User(String uid, String email, String displayName, String photo) {
+    public User(String uid,
+                String email,
+                Instant createdAt,
+                Instant updatedAt,
+                Role role,
+                UserPreferences preferences
+    ) {
         this.uid = uid;
         this.email = email;
-        this.displayName = displayName;
-        this.photo = photo;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isActive = true;
+        this.role = role;
+        this.preferences = preferences;
+        if (preferences != null) {
+            preferences.setUser(this);
+        };
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 
     public String getUid() {
         return uid;
@@ -66,30 +73,6 @@ public class User {
         this.email = email;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
-    public Preferences getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(Preferences preferences) {
-        this.preferences = preferences;
-    }
-
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -104,5 +87,30 @@ public class User {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public UserPreferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(UserPreferences preferences) {
+        this.preferences = preferences;
+
     }
 }

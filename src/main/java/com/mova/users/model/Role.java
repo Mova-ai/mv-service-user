@@ -7,19 +7,35 @@ import jakarta.persistence.*;
 public class Role {
 
     @Id
-    private String name;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Role(String name) {
-        this.name = name;
+    @Column(nullable = false)
+    private String name = "USER";
+
+    @OneToOne
+    @JoinColumn(name = "name_id", nullable = false, unique = true)
+    private User user;
+
+
+    public Role(User user) {
+        this.user = user;
     }
 
-    public Role() {
-        super();
+    public Role() {}
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long name) {
+        this.id = name;
+
     }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -27,7 +43,7 @@ public class Role {
     @Override
     public String toString() {
         return "Role{" +
-                "name='" + name + '\'' +
+                "role='" + id + '\'' +
                 '}';
     }
 }

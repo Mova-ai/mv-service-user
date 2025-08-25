@@ -1,0 +1,315 @@
+---
+config:
+  layout: elk
+  theme: redux-dark-color
+---
+erDiagram
+    User {
+        string firebase_uid PK
+        string email
+        timestamp created_at
+        timestamp updated_at
+        boolean is_active
+    }
+    UserProfile {
+        uuid id PK
+        string firebase_uid FK
+        string first_name
+        string last_name
+        string phone
+        string avatar_url
+        date birth_date
+        text bio
+        timestamp created_at
+        timestamp updated_at
+    }
+    BusinessUser {
+        uuid id PK
+        string firebase_uid FK
+        string business_name
+        string business_type
+        string tax_id
+        boolean is_verified
+        timestamp created_at
+        timestamp updated_at
+    }
+    Location {
+        uuid id PK
+        decimal latitude
+        decimal longitude
+        string address
+        string city
+        string state
+        string country
+        string postal_code
+        timestamp created_at
+    }
+    Category {
+        uuid id PK
+        string name
+        string description
+        string icon_url
+        boolean is_active
+        timestamp created_at
+    }
+    Place {
+        uuid id PK
+        uuid business_user_id FK
+        uuid location_id FK
+        uuid category_id FK
+        string name
+        text description
+        string phone
+        string website
+        string image_url
+        decimal avg_rating
+        integer total_reviews
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    BusinessHours {
+        uuid id PK
+        uuid place_id FK
+        integer day_of_week
+        time open_time
+        time close_time
+        boolean is_closed
+        timestamp created_at
+    }
+    Route {
+        uuid id PK
+        string firebase_uid FK
+        string name
+        text description
+        string difficulty_level
+        decimal estimated_duration
+        decimal total_distance
+        boolean is_public
+        timestamp created_at
+        timestamp updated_at
+    }
+    RouteStop {
+        uuid id PK
+        uuid route_id FK
+        uuid place_id FK
+        integer stop_order
+        decimal estimated_time
+        text notes
+        timestamp created_at
+    }
+    Plan {
+        uuid id PK
+        string firebase_uid FK
+        uuid route_id FK
+        string name
+        date planned_date
+        time start_time
+        string status
+        timestamp created_at
+        timestamp updated_at
+    }
+    PlanPlace {
+        uuid id PK
+        uuid plan_id FK
+        uuid place_id FK
+        integer stop_order
+    }
+    Friendship {
+        uuid id PK
+        string user_id FK
+        string friend_id FK
+        string status
+        timestamp created_at
+        timestamp accepted_at
+    }
+    Post {
+        uuid id PK
+        string firebase_uid FK
+        uuid place_id FK
+        text content
+        string image_url
+        integer likes_count
+        integer comments_count
+        timestamp created_at
+        timestamp updated_at
+    }
+    Favorite {
+        uuid id PK
+        string firebase_uid FK
+        uuid place_id FK
+        timestamp created_at
+    }
+    ReservationStatus {
+        uuid id PK
+        string name
+        string description
+        timestamp created_at
+    }
+    Reservation {
+        uuid id PK
+        string firebase_uid FK
+        uuid place_id FK
+        uuid status_id FK
+        datetime reservation_datetime
+        integer party_size
+        text special_requests
+        decimal estimated_cost
+        timestamp created_at
+        timestamp updated_at
+    }
+    PaymentMethod {
+        uuid id PK
+        string name
+        string description
+        boolean is_active
+        timestamp created_at
+    }
+    Payment {
+        uuid id PK
+        uuid reservation_id FK
+        uuid payment_method_id FK
+        decimal amount
+        string currency
+        string status
+        string external_payment_id
+        timestamp processed_at
+        timestamp created_at
+    }
+    Review {
+        uuid id PK
+        string firebase_uid FK
+        uuid place_id FK
+        uuid reservation_id FK
+        text content
+        timestamp created_at
+        timestamp updated_at
+    }
+    Rating {
+        uuid id PK
+        uuid review_id FK
+        string rating_type
+        integer score
+        timestamp created_at
+    }
+    Achievement {
+        uuid id PK
+        string name
+        text description
+        string icon_url
+        integer points_required
+        string badge_color
+        boolean is_active
+        timestamp created_at
+    }
+    UserPoints {
+        uuid id PK
+        string firebase_uid FK
+        integer total_points
+        integer available_points
+        timestamp last_updated
+    }
+    UserAchievement {
+        uuid id PK
+        string firebase_uid FK
+        uuid achievement_id FK
+        integer points_earned
+        timestamp earned_at
+    }
+    Discount {
+        uuid id PK
+        uuid place_id FK
+        string name
+        text description
+        decimal discount_percentage
+        integer points_cost
+        date valid_from
+        date valid_until
+        boolean is_active
+        timestamp created_at
+    }
+    UserDiscount {
+        uuid id PK
+        string firebase_uid FK
+        uuid discount_id FK
+        boolean is_used
+        timestamp redeemed_at
+        timestamp used_at
+    }
+    BusinessFinance {
+        uuid id PK
+        uuid business_user_id FK
+        date transaction_date
+        decimal daily_revenue
+        integer total_reservations
+        integer completed_reservations
+        integer cancelled_reservations
+        timestamp created_at
+    }
+    SearchHistory {
+        uuid id PK
+        string firebase_uid FK
+        string search_query
+        uuid location_id FK
+        timestamp searched_at
+    }
+    Navigation {
+        uuid id PK
+        string firebase_uid FK
+        uuid from_location_id FK
+        uuid to_location_id FK
+        text route_data
+        decimal estimated_time
+        timestamp created_at
+    }
+    Notification {
+        uuid id PK
+        string firebase_uid FK
+        string title
+        text message
+        string type
+        boolean is_read
+        timestamp created_at
+        timestamp read_at
+    }
+    User ||--|| UserProfile : has
+    User ||--o| BusinessUser : can_be
+    User ||--o{ Route : creates
+    User ||--o{ Plan : creates
+    User ||--o{ Post : creates
+    User ||--o{ Favorite : has
+    User ||--o{ Reservation : makes
+    User ||--o{ Review : writes
+    User ||--|| UserPoints : has
+    User ||--o{ UserAchievement : earns
+    User ||--o{ UserDiscount : redeems
+    User ||--o{ SearchHistory : has
+    User ||--o{ Navigation : uses
+    User ||--o{ Notification : receives
+    User ||--o{ Friendship : initiates
+    User ||--o{ Friendship : receives
+    BusinessUser ||--o{ Place : owns
+    BusinessUser ||--|| BusinessFinance : has
+    Place ||--|| Location : located_at
+    Place ||--|| Category : belongs_to
+    Place ||--o{ BusinessHours : has
+    Place ||--o{ RouteStop : included_in
+    Place ||--o{ Post : featured_in
+    Place ||--o{ Favorite : favorited_by
+    Place ||--o{ Reservation : receives
+    Place ||--o{ Review : reviewed_in
+    Place ||--o{ Discount : offers
+    Plan ||--o{ PlanPlace : contains
+    PlanPlace ||--|| Place : includes
+    Route ||--o{ RouteStop : contains
+    Route ||--o{ Plan : used_in
+    Reservation ||--|| ReservationStatus : has
+    Reservation ||--o| Review : generates
+    Reservation ||--o| Payment : processed_by
+    Review ||--o{ Rating : has
+    Achievement ||--o{ UserAchievement : awarded_as
+    Discount ||--o{ UserDiscount : redeemed_as
+    Payment ||--|| PaymentMethod : uses
+    Location ||--o{ SearchHistory : searched_in
+    Location ||--o{ Navigation : origin
+    Location ||--o{ Navigation : destination
