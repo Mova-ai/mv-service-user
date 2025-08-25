@@ -2,15 +2,13 @@
 package com.mova.users.service;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
-import com.mova.users.dto.UserDto;
+import com.mova.users.dto.UserProfileDTO;
 import com.mova.users.model.Role;
 import com.mova.users.model.User;
 import com.mova.users.model.UserPreferences;
-
 import com.mova.users.model.UserProfile;
-
+import com.mova.users.repository.UserProfileRepository;
 import com.mova.users.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +22,13 @@ import java.util.Optional;
 @Service
 public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    private final UserRepository repo;
+    private final UserRepository repoUser;
+    private final UserProfileRepository repoProfile;
     private UserPreferences userPreferences;
-    public UserService(UserRepository repo) { this.repo = repo; }
+    public UserService(UserRepository repo, UserProfileRepository repoProfile) {
+        this.repoUser = repo;
+        this.repoProfile = repoProfile;
+    }
 
 //    @Transactional
 //    public User getOrProvision(String uid) throws Exception {
@@ -93,7 +95,7 @@ public class UserService {
 
     @Transactional
     public User getUserOrCreate(String uid) throws Exception {
-        Optional<User> userOpt = repo.findById(uid);
+        Optional<User> userOpt = repoUser.findById(uid);
 
         log.debug("Buscando usuario {} ", uid);
 
@@ -125,7 +127,7 @@ public class UserService {
 
                 user.setProfile(profile);
                 profile.setUser(user);
-                User saved = repo.save(user);
+                User saved = repoUser.save(user);
                 log.info("Usuario {} creado correctamente ", uid);
                 return saved;
 
@@ -142,8 +144,23 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public UserProfileDTO getUserSelf(String uid) {
+        UserProfile userData = repoProfile.findById(uid)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
+        return new UserProfileDTO(
+                userData.getId(),
+                userData.getEmail(),
+                userData.getFirstName(),
+                userData.getLastName(),
+                userData.getPhone(),
+                userData.getAvatarUrl(),
+                userData.getBirthday(),
+                userData.getBio()
+        );
+    }
 
-    public User save(User u) { return repo.save(u); }
+    public User save(User u) { return repoUser.save(u); }
 
 }

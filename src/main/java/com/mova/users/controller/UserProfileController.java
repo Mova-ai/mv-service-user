@@ -2,7 +2,7 @@ package com.mova.users.controller;
 
 import com.mova.users.model.UserProfile;
 import com.mova.users.service.UserProfileService;
-import com.mova.users.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +19,10 @@ public class UserProfileController {
     }
 
     @GetMapping
-    public UserProfile getUserProfile(Authentication auth) throws Exception{
+    public ResponseEntity<UserProfile> getUserProfile(Authentication auth) throws Exception{
         System.out.println("Hola desde GetUserProfile");
         String uid = (String) auth.getPrincipal();
         System.out.println(uid);
-        return service.getUserProfile(uid);
+        return ResponseEntity.ok(service.getUserProfile(uid));
     }
 }
