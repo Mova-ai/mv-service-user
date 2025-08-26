@@ -8,7 +8,7 @@ import java.util.Date;
 public class UserProfile {
 
     @Id
-    private String id;
+    private String uid;
 
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "userUid", referencedColumnName = "uid", nullable = false)
@@ -50,18 +50,18 @@ public class UserProfile {
         this.lastName = lastName;
         this.firstName = firstName;
         this.email = email;
-        this.id = id;
+        this.uid = uid;
         this.user = user;
     }
 
     public UserProfile() {}
 
-    public String getId() {
-        return id;
+    public String getUid() {
+        return uid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public User getUidUser() {
@@ -139,7 +139,7 @@ public class UserProfile {
     @Override
     public String toString() {
         return "UserProfile{" +
-                "id=" + id +
+                "uid=" + uid +
                 ", user=" + user +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +

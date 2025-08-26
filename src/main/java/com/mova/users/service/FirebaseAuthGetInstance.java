@@ -21,7 +21,6 @@ public class FirebaseAuthGetInstance {
 
 
         UserDto dto = new UserDto();
-        dto.setUid(fr.getUid());
         dto.setEmail(fr.getEmail());
         return dto;
         } catch (FirebaseAuthException e) {

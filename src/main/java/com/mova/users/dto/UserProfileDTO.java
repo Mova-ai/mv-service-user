@@ -1,5 +1,7 @@
 package com.mova.users.dto;
 
+import com.mova.users.model.UserProfile;
+
 import java.util.Date;
 
 public class UserProfileDTO {
@@ -15,6 +17,16 @@ public class UserProfileDTO {
 
     public UserProfileDTO() {
     }
+
+    public UserProfileDTO(UserProfile entity) {
+        this.firstName = entity.getFirstName();
+        this.lastName = entity.getLastName();
+        this.phone = entity.getPhone();
+        this.avatarUrl = entity.getAvatarUrl();
+        this.birthday = entity.getBirthday();
+        this.bio = entity.getBio();
+    }
+
 
     public UserProfileDTO(String id, String email, String firstName, String lastName, String phone, String avatarUrl, Date birthday, String bio) {
         this.id = id;

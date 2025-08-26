@@ -23,6 +23,13 @@ public class UserController {
         return ResponseEntity.ok(profile);
     }
 
+    @PutMapping("/me")
+    public ResponseEntity<UserProfileDTO>
+        updateUserSelf(Authentication auth, @RequestBody UserProfileDTO user){
+        String uid = (String) auth.getPrincipal();
+        return ResponseEntity.ok(service.updateUserSelf(uid, user));
+    }
+
     // GET /me  → devuelve perfil (y crea si no existe)
 //    @GetMapping
 //    public User me(Authentication auth) throws Exception {

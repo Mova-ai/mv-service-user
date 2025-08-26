@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.Optional;
@@ -103,7 +104,6 @@ public class UserService {
             log.info("Usuario {} no encontrado, procedemos a crearlo", uid);
 
             try {
-
                 UserRecord userFr = FirebaseAuth.getInstance().getUser(uid);
 
                 User user = new User();
@@ -150,7 +150,7 @@ public class UserService {
                         .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         return new UserProfileDTO(
-                userData.getId(),
+                userData.getUid(),
                 userData.getEmail(),
                 userData.getFirstName(),
                 userData.getLastName(),
@@ -159,6 +159,23 @@ public class UserService {
                 userData.getBirthday(),
                 userData.getBio()
         );
+    }
+
+    @Transactional
+    public UserProfileDTO updateUserSelf(String auth,UserProfileDTO userDTO){
+        UserProfile userData = repoProfile.findById(auth).orElseThrow(
+                () -> new RuntimeException("Usuario no encontrado"));
+
+        if (userDTO.getFirstName() != null ) userData.setFirstName(userDTO.getFirstName());
+        if (userDTO.getLastName() == null ) userData.setLastName(userDTO.getLastName());
+        if (userDTO.getPhone() == null ) userData.setPhone(userDTO.getPhone());
+        if (userDTO.getAvatarUrl() == null ) userData.setAvatarUrl(userDTO.getAvatarUrl());
+        if (userDTO.getBirthday() == null ) userData.setBirthday(userDTO.getBirthday());
+        if (userDTO.getBio() == null ) userData.setBio(userDTO.getBio());
+
+        repoProfile.save(userData);
+
+        return new UserProfileDTO(userData);
     }
 
     public User save(User u) { return repoUser.save(u); }
