@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     private final UserService service;
+
     public UserController(UserService users) { this.service = users; }
-
-
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileDTO> getUserSelf(Authentication auth) {
@@ -28,6 +28,13 @@ public class UserController {
         updateUserSelf(Authentication auth, @RequestBody UserProfileDTO user){
         String uid = (String) auth.getPrincipal();
         return ResponseEntity.ok(service.updateUserSelf(uid, user));
+    }
+
+    @PatchMapping("/me/deactivate")
+    public ResponseEntity<?> desactivateUserSelf(Authentication auth) {
+        String uid = (String) auth.getPrincipal();
+        service.deactivateUser(uid);
+        return ResponseEntity.ok().build();
     }
 
     // GET /me  → devuelve perfil (y crea si no existe)

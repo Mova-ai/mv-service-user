@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -30,69 +32,6 @@ public class UserService {
         this.repoUser = repo;
         this.repoProfile = repoProfile;
     }
-
-//    @Transactional
-//    public User getOrProvision(String uid) throws Exception {
-//        try {
-//            Optional<User> user = repo.findById(uid);
-//            if (user == null) {
-//                UserRecord fr = FirebaseAuth.getInstance().getUser(uid);
-//
-//                User u = new User();
-//                u.setUid(fr.getUid());
-//                u.setEmail(fr.getEmail());
-//                u.setIsActive(true);
-//
-//                Role rol = new Role();
-//                u.setRole(rol);
-//
-//                UserPreferences preferences = new UserPreferences();
-//                preferences.setUser(u);
-//                u.setPreferences(preferences);
-//
-//                UserProfile profile = new UserProfile();
-//                profile.setEmail(u.getEmail());
-//                profile.setId(u.getUid());
-//                profile.setUser(u);
-//                u.setProfile(profile);
-//
-//                repo.save(u);
-//
-//            }
-//        } catch (RuntimeException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//
-//        return repo.findById(uid).orElseGet(() -> {
-//            try {
-//                UserRecord fr = FirebaseAuth.getInstance().getUser(uid);
-//                Optional<User> i = repo.findById(uid);
-//                System.out.println("Esto es i:\n\t" + i);
-//                User u = new User();
-//                u.setUid(fr.getUid());
-//                u.setEmail(fr.getEmail());
-//                u.setIsActive(true);
-//
-//                Role role = new Role(u);
-//                u.setRole(role);
-//
-//                UserPreferences prefs = new UserPreferences();
-//                prefs.setUser(u);
-//                u.setPreferences(prefs);
-//
-//                UserProfile profile = new UserProfile();
-//                u.setProfile(profile);
-//                if (fr.getDisplayName() != null ) profile.setFirstName(fr.getDisplayName());
-//                profile.setUser(u);
-//
-//
-//                return repo.save(u);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
-//    }
 
     @Transactional
     public User getUserOrCreate(String uid) throws Exception {
@@ -176,6 +115,20 @@ public class UserService {
         repoProfile.save(userData);
 
         return new UserProfileDTO(userData);
+    }
+
+    @Transactional
+    public User deactivateUser(String uid) {
+        User userData = repoUser.findById(uid)
+                .orElseThrow( () -> new RuntimeException("Usuario no encontrado"));
+
+        userData.setIsActive(false);
+        userData.setDeletedAt(LocalDateTime.now());
+
+        repoUser.save(userData);
+
+        return userData;
+
     }
 
     public User save(User u) { return repoUser.save(u); }
