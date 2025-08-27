@@ -19,6 +19,8 @@ public class UserProfileDTO {
     }
 
     public UserProfileDTO(UserProfile entity) {
+        this.id = entity.getUid();           // 👈 aquí mapeas el id
+        this.email = entity.getEmail();
         this.firstName = entity.getFirstName();
         this.lastName = entity.getLastName();
         this.phone = entity.getPhone();

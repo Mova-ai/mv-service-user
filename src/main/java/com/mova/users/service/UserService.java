@@ -167,11 +167,11 @@ public class UserService {
                 () -> new RuntimeException("Usuario no encontrado"));
 
         if (userDTO.getFirstName() != null ) userData.setFirstName(userDTO.getFirstName());
-        if (userDTO.getLastName() == null ) userData.setLastName(userDTO.getLastName());
-        if (userDTO.getPhone() == null ) userData.setPhone(userDTO.getPhone());
-        if (userDTO.getAvatarUrl() == null ) userData.setAvatarUrl(userDTO.getAvatarUrl());
-        if (userDTO.getBirthday() == null ) userData.setBirthday(userDTO.getBirthday());
-        if (userDTO.getBio() == null ) userData.setBio(userDTO.getBio());
+        if (userDTO.getLastName() != null ) userData.setLastName(userDTO.getLastName());
+        if (userDTO.getPhone() != null ) userData.setPhone(userDTO.getPhone());
+        if (userDTO.getAvatarUrl() != null ) userData.setAvatarUrl(userDTO.getAvatarUrl());
+        if (userDTO.getBirthday() != null ) userData.setBirthday(userDTO.getBirthday());
+        if (userDTO.getBio() != null ) userData.setBio(userDTO.getBio());
 
         repoProfile.save(userData);
 
