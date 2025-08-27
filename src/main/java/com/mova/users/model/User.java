@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -23,6 +24,9 @@ public class User {
 
     @Column()
     private Instant updatedAt = Instant.now();
+
+    @Column()
+    private LocalDateTime deletedAt = null;
 
     @Column(nullable = false)
     private Boolean isActive;
@@ -49,7 +53,7 @@ public class User {
                 Instant createdAt,
                 Instant updatedAt,
                 Role role,
-
+                LocalDateTime deletedAt,
                 UserPreferences preferences,
                 UserProfile profile
 
@@ -60,6 +64,7 @@ public class User {
         this.updatedAt = updatedAt;
         this.isActive = true;
         this.role = role;
+        this.deletedAt = deletedAt;
         this.preferences = preferences;
         if (preferences != null) {
             preferences.setUser(this);
@@ -137,6 +142,22 @@ public class User {
 
     public void setProfile(UserProfile profile) {
         this.profile = profile;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     @Override
