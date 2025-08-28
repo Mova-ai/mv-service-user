@@ -2,6 +2,7 @@
 package com.mova.users.service;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.mova.users.dto.UserProfileDTO;
 import com.mova.users.model.Role;
@@ -14,20 +15,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
-
-import org.springframework.web.bind.annotation.RequestBody;
-
-
+import com.google.firebase.auth.FirebaseAuth;
 import java.util.Optional;
 
 
 @Service
 public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository repoUser;
     private final UserProfileRepository repoProfile;
     private UserPreferences userPreferences;
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
     public UserService(UserRepository repo, UserProfileRepository repoProfile) {
         this.repoUser = repo;
         this.repoProfile = repoProfile;
@@ -118,19 +117,13 @@ public class UserService {
     }
 
     @Transactional
-    public User deactivateUser(String uid) {
+    public void deactivateUser(String uid) throws FirebaseAuthException {
         User userData = repoUser.findById(uid)
                 .orElseThrow( () -> new RuntimeException("Usuario no encontrado"));
 
-        userData.setIsActive(false);
-        userData.setDeletedAt(LocalDateTime.now());
-
-        repoUser.save(userData);
-
-        return userData;
-
+        repoUser.delete(userData);
+        FirebaseAuth.getInstance().deleteUser(uid);
     }
 
-    public User save(User u) { return repoUser.save(u); }
 
 }
