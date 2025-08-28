@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.google.firebase.auth.FirebaseAuth;
 import java.util.Optional;
 
 
@@ -34,6 +33,7 @@ public class UserService {
 
     @Transactional
     public User getUserOrCreate(String uid) throws Exception {
+        log.debug("Buscando usuario {} en la base de datos", uid);
         Optional<User> userOpt = repoUser.findById(uid);
 
         log.debug("Buscando usuario {} ", uid);
@@ -51,10 +51,12 @@ public class UserService {
 
                 Role  rol = new Role(user);
                 user.setRole(rol);
+                log.debug("Role asignado al usuario {}", uid);
 
                 UserPreferences preferences = new UserPreferences();
                 user.setPreferences(preferences);
                 preferences.setUser(user);
+                log.debug("Preferences inicializadas para usuario {}", uid);
 
                 UserProfile profile = new UserProfile();
                 profile.setEmail(userFr.getEmail());
@@ -69,13 +71,10 @@ public class UserService {
                 log.info("Usuario {} creado correctamente ", uid);
                 return saved;
 
-
             } catch (Exception e) {
                 log.error("Error creando usuario {} ", uid, e);
                 throw e;
             }
-
-
         } else {
             log.debug("Usuario {} encontrado en la base de datos", uid);
             return userOpt.get();
@@ -84,9 +83,14 @@ public class UserService {
 
     @Transactional
     public UserProfileDTO getUserSelf(String uid) {
+        log.debug("Obteniendo perfil de usuario {}", uid);
         UserProfile userData = repoProfile.findById(uid)
-                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                        .orElseThrow(() -> {
+                            log.error("Usuario {} no encontrado al obtener perfil", uid);
+                            return new RuntimeException("Usuario no encontrado");
+                        });
 
+        log.debug("Perfil de usuario {} obtenido correctamente", uid);
         return new UserProfileDTO(
                 userData.getUid(),
                 userData.getEmail(),
@@ -100,9 +104,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserProfileDTO updateUserSelf(String auth,UserProfileDTO userDTO){
-        UserProfile userData = repoProfile.findById(auth).orElseThrow(
-                () -> new RuntimeException("Usuario no encontrado"));
+    public UserProfileDTO updateUserSelf(String uid, UserProfileDTO userDTO){
+        log.info("Actualizando perfil de usuario {}", uid);
+        UserProfile userData = repoProfile.findById(uid)
+                .orElseThrow(() -> {
+                    log.error("Usuario {} no encontrado al intentar actualizar perfil", uid);
+                    return new RuntimeException("Usuario no encontrado");
+                });
 
         if (userDTO.getFirstName() != null ) userData.setFirstName(userDTO.getFirstName());
         if (userDTO.getLastName() != null ) userData.setLastName(userDTO.getLastName());
@@ -112,17 +120,55 @@ public class UserService {
         if (userDTO.getBio() != null ) userData.setBio(userDTO.getBio());
 
         repoProfile.save(userData);
+        log.info("Perfil de usuario {} actualizado correctamente", uid);
 
         return new UserProfileDTO(userData);
     }
 
     @Transactional
+    public void changeEmail(String uid, String email) {
+        log.info("Actualizando email de usuario {} a {}", uid, email);
+        User userOpt = repoUser.findById(uid)
+            .orElseThrow(() -> {
+                log.error("Usuario {} no encontrado al intentar cambiar email", uid);
+                return new RuntimeException("Usuario no encontrado");
+            });
+
+        try {
+            UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(uid)
+                    .setEmail(email);
+
+            FirebaseAuth.getInstance().updateUser(request);
+            log.debug("Email actualizado en Firebase para usuario {}", uid);
+
+            userOpt.setEmail(email);
+            repoUser.save(userOpt);
+            log.info("Email actualizado en base de datos para usuario {}", uid);
+        } catch (FirebaseAuthException e) {
+            log.error("Error al actualizar usuario {} ", uid, e);
+
+            if ("EMAIL_ALREADY_EXISTS".equals(e.getErrorCode())) {
+                throw new RuntimeException("El correo ya está en uso por otro usuario");
+            } else {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+    }
+
+    @Transactional
     public void deactivateUser(String uid) throws FirebaseAuthException {
+        log.info("Desactivando usuario {}", uid);
         User userData = repoUser.findById(uid)
-                .orElseThrow( () -> new RuntimeException("Usuario no encontrado"));
+            .orElseThrow(() -> {
+                log.error("Usuario {} no encontrado al intentar desactivar", uid);
+                return new RuntimeException("Usuario no encontrado");
+            });
+
+        FirebaseAuth.getInstance().deleteUser(uid);
+        log.info("Usuario {} eliminado de Firebase correctamente", uid);
 
         repoUser.delete(userData);
-        FirebaseAuth.getInstance().deleteUser(uid);
+        log.debug("Usuario {} eliminado de base de datos", uid);
     }
 
 
